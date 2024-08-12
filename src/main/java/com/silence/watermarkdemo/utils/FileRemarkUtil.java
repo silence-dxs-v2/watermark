@@ -1,10 +1,21 @@
 package com.silence.watermarkdemo.utils;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.fontbox.ttf.TrueTypeCollection;
+import org.apache.fontbox.ttf.TrueTypeFont;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+import org.apache.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.openxml4j.opc.PackagePartName;
 import org.apache.poi.openxml4j.opc.PackageRelationship;
@@ -19,11 +30,13 @@ import org.thymeleaf.util.DateUtils;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -147,7 +160,7 @@ public class FileRemarkUtil {
 		return pro.getProperty("file.encoding");
 	}
 
-	public static void putWaterMark(InputStream inputStream, ServletOutputStream outputStream, String content, String fileName) {
+	public static void putWaterMark(InputStream inputStream, OutputStream outputStream, String content, String fileName) {
 		try {
 			String fileType = getFileType(fileName);
 			if (fileType.equalsIgnoreCase("xlsx")) {
@@ -165,7 +178,7 @@ public class FileRemarkUtil {
 		}
 	}
 
-	public static void putWaterRemarkToExcel(InputStream inputStream, ServletOutputStream outputStream, String content) {
+	public static void putWaterRemarkToExcel(InputStream inputStream, OutputStream outputStream, String content) {
 		try {
 
 			XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
@@ -189,26 +202,145 @@ public class FileRemarkUtil {
 	}
 
 
-	public static void putWaterRemarkToPDF(InputStream inputStream, ServletOutputStream outputStream, String content) {
+//	public static void putWaterRemarkToPDF(InputStream inputStream, OutputStream outputStream, String content) {
+//		try {
+//			PDDocument document = PDDocument.load(inputStream);
+//			Integer width = 600;
+//			Integer height = 150;
+//			BufferedImage image = getWaterImage(width, height, content, 30);
+//			ByteArrayOutputStream os = new ByteArrayOutputStream();
+//			ImageIO.write(image, "png", os);
+//			PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, os.toByteArray(), "waterMark");
+//			for (PDPage page : document.getPages()) {
+//				try (PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true, true)) {
+//					contentStream.drawImage(pdImage, 0, 0, width, height);
+//				}
+//			}
+//			document.save(outputStream);
+//			document.close();
+//		} catch (Exception e) {
+//			log.error("putWaterRemarkToPDF error", e);
+//		}
+//	}
+
+//	public static void putWaterRemarkToPDF(InputStream inputStream, OutputStream outputStream, String content) {
+//		try {
+//			PDDocument document = PDDocument.load(inputStream);
+//			PDExtendedGraphicsState gs = new PDExtendedGraphicsState();
+//			gs.setNonStrokingAlphaConstant(0.5f); // 设置透明度
+//			gs.setStrokingAlphaConstant(0.5f);
+//
+//			// 使用PDFBox的默认字体
+//			InputStream fontStream = FileRemarkUtil.class.getClassLoader().getResourceAsStream("font/wqy-zenhei.ttc");
+//			PDType0Font font= PDType0Font.load(document, fontStream);
+//			// 加载提取的字体
+////			PDType0Font font = PDType0Font.load(document, fontStream,true);
+//
+//			for (PDPage page : document.getPages()) {
+//				PDRectangle mediaBox = page.getMediaBox();
+//				float pageWidth = mediaBox.getWidth();
+//				float pageHeight = mediaBox.getHeight();
+//
+//				try (PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true, true)) {
+//					contentStream.setGraphicsStateParameters(gs);
+//					contentStream.setNonStrokingColor(Color.GRAY); // 设置水印颜色
+//					contentStream.setFont(font, 50);
+//
+//					// 计算水印位置
+//					float textWidth = font.getStringWidth(content) / 1000 * 50;
+//					float x = (pageWidth - textWidth) / 2;
+//					float y = pageHeight / 2;
+//
+//					// 添加水印
+//					contentStream.beginText();
+//					contentStream.setTextMatrix(2, 0, 0, 2, x, y); // 旋转水印
+//					contentStream.showText(content);
+//					contentStream.endText();
+//				}
+//			}
+//
+//			document.save(outputStream);
+//			document.close();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+public static void putWaterRemarkToPDF(InputStream input, OutputStream output, String waterMarkName) {
+	BufferedOutputStream bos = null;
+	try {
+		// 读取文件，生成reader
+		com.itextpdf.text.pdf.PdfReader reader = new com.itextpdf.text.pdf.PdfReader(input);
+		// 生成输出文件，开启输出流
+//		bos = new BufferedOutputStream(new FileOutputStream(new File("/Users/dxs/Desktop/share/new/pdfwatermark")));
+		// 读取输出流，生成stamper（印章）
+		com.itextpdf.text.pdf.PdfStamper stamper = new com.itextpdf.text.pdf.PdfStamper(reader, output);
+		// 设置stamper加密
+		stamper.setEncryption(null, "Ka_ze".getBytes(StandardCharsets.UTF_8), PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
+
+		// 获取总页数 +1, 下面从1开始遍历
+		int total = reader.getNumberOfPages() + 1;
+		// 使用classpath下面的字体库
+		com.itextpdf.text.pdf.BaseFont base = null;
 		try {
-			PDDocument document = PDDocument.load(inputStream);
-			Integer width = 600;
-			Integer height = 150;
-			BufferedImage image = getWaterImage(width, height, content, 30);
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			ImageIO.write(image, "png", os);
-			PDImageXObject pdImage = PDImageXObject.createFromByteArray(document, os.toByteArray(), "waterMark");
-			for (PDPage page : document.getPages()) {
-				try (PDPageContentStream contentStream = new PDPageContentStream(document, page, PDPageContentStream.AppendMode.APPEND, true, true)) {
-					contentStream.drawImage(pdImage, 0, 0, width, height);
+			base = com.itextpdf.text.pdf.BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", com.itextpdf.text.pdf.BaseFont.EMBEDDED);
+		} catch (Exception e) {
+			// 日志处理
+			e.printStackTrace();
+		}
+
+		// 间隔
+		int interval = -15;
+		// 获取水印文字的高度和宽度
+		int textH = 0, textW = 0;
+		JLabel label = new JLabel();
+		label.setText(waterMarkName);
+		FontMetrics metrics = label.getFontMetrics(label.getFont());
+		textH = metrics.getHeight();
+		textW = metrics.stringWidth(label.getText());
+
+		// 设置水印透明度
+		com.itextpdf.text.pdf.PdfGState gs = new com.itextpdf.text.pdf.PdfGState();
+		gs.setFillOpacity(0.2f);
+		gs.setStrokeOpacity(0.7f);
+
+		com.itextpdf.text.Rectangle pageSizeWithRotation = null;
+		PdfContentByte content = null;
+		for (int i = 1; i < total; i++) {
+			// 在内容上方加水印
+			content = stamper.getOverContent(i);
+			// 在内容下方加水印
+			// content = stamper.getUnderContent(i);
+			content.saveState();
+			content.setGState(gs);
+
+			// 设置字体和字体大小
+			content.beginText();
+			content.setFontAndSize(base, 25);
+
+			// 获取每一页的高度、宽度
+			pageSizeWithRotation = reader.getPageSizeWithRotation(i);
+			float pageHeight = pageSizeWithRotation.getHeight();
+			float pageWidth = pageSizeWithRotation.getWidth();
+
+			// 根据纸张大小多次添加， 水印文字成30度角倾斜
+			for (int height = interval + textH; height < pageHeight; height = height + textH * 15) {
+				for (int width = interval + textW; width < pageWidth + textW; width = width + textW * 2) {
+					content.showTextAligned(Element.ALIGN_LEFT, waterMarkName, width - textW, height - textH, 30);
 				}
 			}
-			document.save(outputStream);
-			document.close();
-		} catch (Exception e) {
-			log.error("putWaterRemarkToPDF error", e);
+			content.endText();
 		}
+
+		// 关流
+		stamper.close();
+		reader.close();
+	} catch (DocumentException | IOException e) {
+		e.printStackTrace();
 	}
+
+}
+
+
 
 	private static String getFileType(String filePath) {
 		String fileType = "";
