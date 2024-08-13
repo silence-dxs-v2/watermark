@@ -1,0 +1,10 @@
+## 共享配置
+#jodconverter:
+#  local:
+#    enabled: true
+#    portNumbers: 8100
+#    maxTasksPerProcess: 100
+#    taskQueueTimeout: 60
+watermark:
+#  host: http://192.168.91.200:8100
+  host: http://localhost:8100

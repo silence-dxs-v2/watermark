@@ -2,6 +2,8 @@ package com.silence.watermarkdemo.controller;
 
 import com.silence.watermarkdemo.utils.Documents4jUtil;
 import com.silence.watermarkdemo.utils.FileRemarkUtil;
+import com.silence.watermarkdemo.utils.MyTest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,10 @@ import java.net.URLEncoder;
 @RestController
 @RequestMapping("/watermark")
 public class TestController {
+//    @Autowired
+//    private MyTest myTest;
+    @Autowired
+    private FileRemarkUtil fileRemarkUtil;
     @PostMapping("/down")
     public void downloadFile(HttpServletResponse response, MultipartFile file){
         // 将文件流拷贝到输出流
@@ -33,7 +39,7 @@ public class TestController {
 
             response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFileName);
 
-            FileRemarkUtil.putWaterMark(fileInputStream,response.getOutputStream(), DateUtils.createNow().getCalendarType(), file.getOriginalFilename());
+            fileRemarkUtil.putWaterMark(fileInputStream,response.getOutputStream(), "silence", file.getOriginalFilename());
             response.flushBuffer();
             //更新文件下载次数
 
@@ -63,8 +69,8 @@ public class TestController {
             response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFileName);
 
 //            Documents4jUtil.convertWordToPdf(fileInputStream,response.getOutputStream());
-            Documents4jUtil.test_word_to_pdf(fileInputStream,response.getOutputStream());
-
+//            Documents4jUtil.test_word_to_pdf(fileInputStream,response.getOutputStream());
+//            myTest.wordToPdfByJod(fileInputStream,response.getOutputStream(),encodedFileName);
             response.flushBuffer();
             //更新文件下载次数
 

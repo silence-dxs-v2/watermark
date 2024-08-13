@@ -123,21 +123,26 @@
 
 
 
+<!--》》》》》》》》》》》》》》》》》》》》》》》》》-->
+
+
+        <!--office转换工具-->
+<!--        <dependency>-->
+<!--            <groupId>org.jodconverter</groupId>-->
+<!--            <artifactId>jodconverter-spring-boot-starter</artifactId>-->
+<!--            <version>4.4.7</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.jodconverter</groupId>-->
+<!--            <artifactId>jodconverter-local</artifactId>-->
+<!--            <version>4.4.7</version>-->
+<!--        </dependency>-->
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-http</artifactId>
+            <version>4.6.1</version>
         </dependency>
-
-        <!-- iText dependencies -->
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itext7-core</artifactId>
-            <version>7.1.15</version>
-        </dependency>
-
-
 
 
 

@@ -3,14 +3,9 @@ package com.silence.watermarkdemo.utils;
 import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
 import com.documents4j.job.LocalConverter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
+
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 
 
 import java.io.*;
@@ -24,32 +19,8 @@ import java.util.List;
 public class Documents4jUtil {
 
     public static void test_word_to_pdf(InputStream stream,OutputStream sourceOutput) {
-        try {
-            // Read the Word document
-//            FileInputStream fis = new FileInputStream(wordFilePath);
-            XWPFDocument document = new XWPFDocument(stream);
 
-            // Create the PDF document
-            PdfWriter pdfWriter = new PdfWriter(sourceOutput);
-            PdfDocument pdfDocument = new PdfDocument(pdfWriter);
-            Document pdfLayoutDoc = new Document(pdfDocument);
 
-            // Iterate through the paragraphs in the Word document
-            List<XWPFParagraph> paragraphs = document.getParagraphs();
-            for (XWPFParagraph paragraph : paragraphs) {
-                String text = paragraph.getText();
-                pdfLayoutDoc.add(new Paragraph(text));
-            }
-
-            // Close the documents
-            pdfLayoutDoc.close();
-            document.close();
-            stream.close();
-
-            System.out.println("Word to PDF conversion completed successfully.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -96,6 +67,8 @@ public class Documents4jUtil {
      * 通过libreoffice 实现word转pdf -- linux 环境 需要有 libreoffice 服务
      *
      */
+
+
     public static void linuxWordToPdf(InputStream stream,OutputStream sourceOutput) {
         // 创建临时文件
         File tempFile = createTempFileFromInputStream(stream);
@@ -166,7 +139,7 @@ public class Documents4jUtil {
             File file = outputFile.toFile();
             FileInputStream fileInputStream = new FileInputStream(file);
 //            Files.copy(outputFile, sourceOutput);
-            FileRemarkUtil.putWaterMark(fileInputStream, sourceOutput, "物联网2024-08-12 12:23:23", file.getName());
+//            FileRemarkUtil.putWaterMark(fileInputStream, sourceOutput, "物联网2024-08-12 12:23:23", file.getName());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
