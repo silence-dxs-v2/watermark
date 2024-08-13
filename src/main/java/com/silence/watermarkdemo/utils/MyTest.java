@@ -1,16 +1,15 @@
 package com.silence.watermarkdemo.utils;
 
-import cn.hutool.core.io.resource.FileResource;
 import cn.hutool.http.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.util.IOUtils;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @description：

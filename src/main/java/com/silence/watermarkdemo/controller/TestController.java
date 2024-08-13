@@ -1,14 +1,12 @@
 package com.silence.watermarkdemo.controller;
 
-import com.silence.watermarkdemo.utils.Documents4jUtil;
 import com.silence.watermarkdemo.utils.FileRemarkUtil;
-import com.silence.watermarkdemo.utils.MyTest;
+import com.silence.watermarkdemo.utils.Word2PdfUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.DateUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -71,6 +69,7 @@ public class TestController {
 //            Documents4jUtil.convertWordToPdf(fileInputStream,response.getOutputStream());
 //            Documents4jUtil.test_word_to_pdf(fileInputStream,response.getOutputStream());
 //            myTest.wordToPdfByJod(fileInputStream,response.getOutputStream(),encodedFileName);
+            Word2PdfUtil.doc2pdf(fileInputStream, response.getOutputStream());
             response.flushBuffer();
             //更新文件下载次数
 
