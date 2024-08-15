@@ -1,16 +1,17 @@
-FROM openjdk:8-jdk
+FROM openjdk:8-jdk-slim
 
-RUN apt-get update && apt-get install -y tini && apt-get  install -y libreoffice
-
-# 复制 jar 文件到容器
-COPY target/watermark.jar /app/app.jar
-ENV LIBREOFFICE_HOME=/usr/lib/libreoffice
-ENV PATH=$JAVA_HOME/bin:$LIBREOFFICE_HOME/program:$PATH
-
+RUN apt-get update && apt-get install -y libfreetype6 fontconfig
 # 设置工作目录
 WORKDIR /app
 
-# 设置 ENTRYPOINT 以允许使用 exec
-ENTRYPOINT ["tini", "--", "java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+# 复制构建好的 JAR 文件到镜像中
+COPY target/watermark.jar /app/app.jar
+# 复制字体到镜像中
+COPY target/classes/font/simsun.ttf  /usr/share/fonts/simsun.ttf
+# 更新字体缓存
+RUN fc-cache -f -v
+# 暴露应用的端口
+EXPOSE 8100
 
-EXPOSE 8082/tcp
+# 定义启动命令
+CMD ["java", "-jar", "app.jar"]

@@ -198,10 +198,10 @@ public class FileRemarkUtil {
 				putWaterRemarkToExcel(inputStream, outputStream, content);
 			} else if (fileType.equalsIgnoreCase("docx")) {
 //				putWaterRemarkToWord(inputStream, outputStream, content);
-//				WatermarkUtil.waterMarkDocXDocument(inputStream, outputStream, content);
+				WatermarkUtil.waterMarkDocXDocument(inputStream, outputStream, content);
 //				Documents4jUtil.convertWordToPdf(inputStream,outputStream);
-				wordToPdfByJod(inputStream, outputStream, content);
-
+//				wordToPdfByJod(inputStream, outputStream, content);
+//				Word2PdfUtil.doc2pdf(inputStream, outputStream);
 			} else if (fileType.equalsIgnoreCase("pdf")) {
 				putWaterRemarkToPDF(inputStream, outputStream, content);
 			} else {
@@ -246,7 +246,7 @@ public class FileRemarkUtil {
 			// 读取输出流，生成stamper（印章）
 			com.itextpdf.text.pdf.PdfStamper stamper = new com.itextpdf.text.pdf.PdfStamper(reader, output);
 			// 设置stamper加密
-			stamper.setEncryption(null, "Ka_ze".getBytes(StandardCharsets.UTF_8), PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
+//			stamper.setEncryption(null, "Ka_ze".getBytes(StandardCharsets.UTF_8), PdfWriter.ALLOW_PRINTING, PdfWriter.STANDARD_ENCRYPTION_128);
 
 			// 获取总页数 +1, 下面从1开始遍历
 			int total = reader.getNumberOfPages() + 1;

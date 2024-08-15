@@ -2,14 +2,12 @@ package com.silence.watermarkdemo.controller;
 
 import com.silence.watermarkdemo.utils.FileRemarkUtil;
 import com.silence.watermarkdemo.utils.Word2PdfUtil;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
@@ -26,13 +24,19 @@ import java.net.URLEncoder;
  */
 @RestController
 @RequestMapping("/watermark")
+@Api(value = "水印接口", tags = {"水印接口"})
 public class TestController {
 //    @Autowired
 //    private MyTest myTest;
     @Autowired
     private FileRemarkUtil fileRemarkUtil;
     @PostMapping("/down")
-    public void downloadFile(HttpServletResponse response, MultipartFile file){
+    @ApiOperation(value = "word/excel/pdf加水印接口", notes = "word/excel/pdf加水印接口")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "file", value = "待处理的文件", required = true, dataType = "org.springframework.web.multipart.MultipartFile", paramType = "form")
+//    })
+    public void downloadFile(HttpServletResponse response,  @RequestPart(name = "file")
+            MultipartFile file){
         // 将文件流拷贝到输出流
         InputStream fileInputStream = null;
         try{
@@ -62,7 +66,8 @@ public class TestController {
 
     @PostMapping("/wordToPdf")
     @ResponseBody
-    public ResponseEntity<?> wordToPdf(HttpServletResponse response, MultipartFile file){
+    @ApiOperation(value = "word转pdf接口", notes = "word转pdf接口")
+    public ResponseEntity<?> wordToPdf(HttpServletResponse response, @RequestPart(name = "file")MultipartFile file){
         // 将文件流拷贝到输出流
         InputStream fileInputStream = null;
         int i = 0;
@@ -92,7 +97,7 @@ public class TestController {
                 }
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName + "\"")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName )
                         .body(byteArrayOutputStream.toByteArray());
 //            }
 
