@@ -69,7 +69,7 @@ public class WatermarkUtil {
 
 			// 把整页都打上水印
 			for (int lineIndex = -5; lineIndex < 20; lineIndex++) {
-				STYLE_TOP = 100 * lineIndex;
+				STYLE_TOP = 200 * lineIndex;
 				waterMarkDocXDocument(doc, content);
 			}
 
@@ -166,7 +166,7 @@ public class WatermarkUtil {
 		// 水印文字之间使用8个空格分隔
 		fingerText = fingerText + repeatString(" ", 8);
 		// 一行水印重复水印文字次数
-		fingerText = repeatString(fingerText, 10);
+		fingerText = repeatString(fingerText, 3);
 
 		// 遍历文档中的每一个段落
 		for (XWPFParagraph paragraph : doc.getParagraphs()) {
