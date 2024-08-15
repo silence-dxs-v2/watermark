@@ -19,7 +19,7 @@ docker pull dockersilencev1/watermark:v1
 
 
 
-docker run -d  -p 8100:8082  --name  watermark-web   dockersilencev1/watermark-web:v1
+docker run -d  -p 8100:8082  --name  watermark-web   dockersilencev1/watermark:v1
 
 ## swagger 
 http://localhost:8100//swagger-ui/index.html
