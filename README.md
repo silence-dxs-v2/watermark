@@ -1,6 +1,12 @@
 # watermark
 基于poi给docx、excel、pdf添加水印、word转pdf，无需安装第三方软件
 
+## 技术点
+- springboot
+- poi
+- aspose
+- swagger
+
 ## 功能
 ### word/excel/pdf 加水印
 ![image](https://github.com/user-attachments/assets/c57c883d-bb5e-44b8-b0c5-9888936f56cd)
