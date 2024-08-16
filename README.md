@@ -19,6 +19,9 @@
 
 
 
+<img width="1407" alt="image" src="https://github.com/user-attachments/assets/533a06cb-1fd3-4ee9-8781-e2500209f82a">
+
+
 
 ## docker 部署启动
 docker pull dockersilencev1/watermark:v1
